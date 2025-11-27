@@ -1,0 +1,720 @@
+/*.row{
+    display: block;
+}*/
+@media only screen and (max-width: 1200px) {}
+
+@media only screen and (max-width: 1090px) {}
+
+@media only screen and (max-width: 1024px) {}
+
+@media (min-width: 1024px) and (max-width: 1110px) {
+    .tabsmenu {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-direction: row;
+    }
+
+    .custom-scrollbar-inner {
+        padding: 15px !important;
+    }
+
+    .custom-scrollbar-inner button {
+        font-size: 16px !important;
+    }
+
+    .tabs_view {
+        display: block
+    }
+
+    .tabs_view {
+        display: block;
+    }
+
+    .about_overlay {
+        display: none;
+    }
+
+    .ourhistory {
+        margin: 0px;
+    }
+
+    .our_history_section {
+        padding: 0px;
+    }
+
+    .mobile_view_loc_pic {
+        margin-left: 0px !important;
+    }
+
+    .locaton_mobile_section {
+        margin-left: 0px !important;
+        padding: 15px;
+    }
+
+    .select_locotion {
+        padding-left: 0px !important;
+    }
+
+    .Our_Presence {
+        padding: 0px
+    }
+
+    .Real {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .Testimonials_tabs_view {
+        width: 270px !important;
+    }
+
+    .testimonial-item {
+        padding: 15px !important;
+    }
+
+    .testimonial-item div:last-child div {
+        font-size: 12px !important;
+    }
+
+    .Join_Our_Team {
+        margin: 20px;
+    }
+
+
+
+
+}
+
+
+@media (min-width: 760px) and (max-width: 1024px) {
+    .tabsmenu {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-direction: row;
+    }
+
+    .tabs_view {
+        display: block;
+    }
+
+    .about_overlay {
+        display: none;
+    }
+
+    .ourhistory {
+        margin: 0px;
+    }
+
+    .ourhistory h1 {
+        font-size: 30px !important;
+        margin-top: 50px;
+    }
+
+    .our_history_section {
+        padding: 0px;
+    }
+
+    .mobile_view_loc_pic {
+        margin-left: 0px !important;
+        width: 230px !important;
+    }
+
+    .locaton_mobile_section {
+        margin-left: 0px !important;
+        padding: 15px;
+    }
+
+    .select_locotion {
+        padding-left: 0px !important;
+    }
+
+    .Our_Presence {
+        padding: 0px
+    }
+
+    .Real {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .Testimonials_tabs_view {
+        width: 270px !important;
+    }
+
+    .testimonial-item_tabs {
+        height: 350px !important;
+        padding: 15px !important;
+    }
+
+    .testimonial-item_tabs div:last-child div {
+        font-size: 12px !important;
+    }
+
+    .Join_Our_Team {
+        margin: 20px;
+    }
+
+
+
+
+}
+
+@media (min-width: 575px) and (max-width: 768px) {
+    .testimonials_justify {
+        justify-content: start !important;
+    }
+
+    .mobile_text {
+        font-size: 24px;
+    }
+
+    .animation_text {
+        font-size: 24px;
+        margin-top: 14px;
+    }
+
+    .delicious_mobile {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .tabsmenu {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-direction: row;
+    }
+
+    .Meal_Plans {
+        display: none;
+    }
+
+    .mobile_view_plan {
+        justify-content: center;
+    }
+
+    .aliment-left {
+        text-align: center;
+    }
+
+    .about_overlay {
+        display: none;
+    }
+
+    .ourhistory {
+        margin-right: 0px;
+    }
+
+    .our_history_section {
+        margin-top: -100px;
+        padding-bottom: 0px;
+    }
+
+    .mobile_view_loc_pic {
+        margin-left: 0px !important;
+    }
+
+    .locaton_mobile_section {
+        margin-left: 0px !important;
+    }
+
+
+    .select_locotion {
+        padding-left: 0px !important;
+    }
+
+    .Testimonials_mobile {
+        width: 100% !important;
+    }
+
+    .getnow {
+        width: 100% !important;
+    }
+
+    .Join_Our_Team {
+        margin: 15px;
+    }
+
+    .about_cards {
+        width: 100% !important;
+        display: block;
+    }
+
+    .w100 {
+        width: 100% !important;
+        margin-bottom: 25px;
+    }
+
+    .blog_banner {
+        padding: 40px 20px;
+        margin-top: 80px;
+
+    }
+
+    .Talk {
+        font-size: 30px;
+    }
+
+    .LetGreeNox {
+        margin-bottom: 0px;
+    }
+
+    .OurExpert {
+        margin: 20px;
+    }
+
+    .OurExpert a {
+        margin-bottom: 20px;
+        display: block;
+        text-align: center;
+    }
+
+    .career_h1 {
+        font-size: 30px;
+    }
+
+    .career_sec {
+        padding-top: 120px;
+        padding-bottom: 20px;
+    }
+
+    .career_sec p {
+        padding: 0 10px;
+    }
+
+    .Main_Heading_bg {
+        height: auto;
+    }
+
+    .Main_Heading div:last-child {
+        margin: 0px;
+        padding: 10px;
+    }
+
+    .Main_Heading h1 {
+        font-size: 36px;
+        line-height: 1.2;
+        margin: 0px;
+        padding: 0px;
+        margin-top: 25px;
+    }
+
+    .Our_Presence {
+        padding: 0px;
+    }
+
+    .Our_Presence h2 {
+        font-size: 40px;
+        margin-bottom: 16px;
+    }
+
+    .Our_Presence h3 {
+        font-size: 20px;
+    }
+
+    .gap2 {
+        gap: 20px;
+    }
+
+    .Real {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .serchpanel {
+        display: block;
+        text-align: center;
+    }
+
+    .serchpanel form {
+        width: 100%;
+        display: block;
+        margin-top: 20px;
+    }
+
+    .subcriptionplan_bg {
+        background: none !important;
+        margin-top: 25px;
+    }
+
+    .wfull {
+        width: 100% !important;
+        padding: 0px;
+    }
+
+
+}
+
+@media (min-width: 480px) and (max-width: 575px) {
+    .testimonials_justify {
+        justify-content: start !important;
+    }
+
+    .mobile_text {
+        font-size: 24px;
+    }
+
+    .animation_text {
+        font-size: 24px;
+        margin-top: 14px;
+    }
+
+    .delicious_mobile {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .tabsmenu {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-direction: row;
+    }
+
+    .Meal_Plans {
+        display: none;
+    }
+
+    .mobile_view_plan {
+        justify-content: center;
+    }
+
+    .aliment-left {
+        text-align: center;
+    }
+
+    .about_overlay {
+        display: none;
+    }
+
+    .ourhistory {
+        margin-right: 0px;
+    }
+
+    .our_history_section {
+        margin-top: -100px;
+        padding-bottom: 0px;
+    }
+
+    .mobile_view_loc_pic {
+        margin-left: 0px !important;
+    }
+
+    .locaton_mobile_section {
+        margin-left: 0px !important;
+    }
+
+
+    .select_locotion {
+        padding-left: 0px !important;
+    }
+
+    .Testimonials_mobile {
+        width: 100% !important;
+    }
+
+    .getnow {
+        width: 100% !important;
+    }
+
+    .Join_Our_Team {
+        margin: 15px;
+    }
+
+    .about_cards {
+        width: 100% !important;
+        display: block;
+    }
+
+    .w100 {
+        width: 100% !important;
+        margin-bottom: 25px;
+    }
+
+    .blog_banner {
+        padding: 40px 20px;
+        margin-top: 80px;
+
+    }
+
+    .Talk {
+        font-size: 30px;
+    }
+
+    .LetGreeNox {
+        margin-bottom: 0px;
+    }
+
+    .OurExpert {
+        margin: 20px;
+    }
+
+    .OurExpert a {
+        margin-bottom: 20px;
+        display: block;
+        text-align: center;
+    }
+
+    .career_h1 {
+        font-size: 30px;
+    }
+
+    .career_sec {
+        padding-top: 120px;
+        padding-bottom: 20px;
+    }
+
+    .career_sec p {
+        padding: 0 10px;
+    }
+
+    .Main_Heading_bg {
+        height: auto;
+    }
+
+    .Main_Heading div:last-child {
+        margin: 0px;
+        padding: 10px;
+    }
+
+    .Main_Heading h1 {
+        font-size: 36px;
+        line-height: 1.2;
+        margin: 0px;
+        padding: 0px;
+        margin-top: 25px;
+    }
+
+    .Our_Presence {
+        padding: 0px;
+    }
+
+    .Our_Presence h2 {
+        font-size: 40px;
+        margin-bottom: 16px;
+    }
+
+    .Our_Presence h3 {
+        font-size: 20px;
+    }
+
+    .gap2 {
+        gap: 20px;
+    }
+
+    .Real {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .serchpanel {
+        display: block;
+        text-align: center;
+    }
+
+    .serchpanel form {
+        width: 100%;
+        display: block;
+        margin-top: 20px;
+    }
+
+    .subcriptionplan_bg {
+        background: none !important;
+        margin-top: 25px;
+    }
+
+    .wfull {
+        width: 100% !important;
+        padding: 0px;
+    }
+
+
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .testimonials_justify {
+        justify-content: start !important;
+    }
+
+    .mobile_text {
+        font-size: 24px;
+    }
+
+    .animation_text {
+        font-size: 24px;
+        margin-top: 14px;
+    }
+
+    .delicious_mobile {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .tabsmenu {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-direction: row;
+    }
+
+    .Meal_Plans {
+        display: none;
+    }
+
+    .mobile_view_plan {
+        justify-content: center;
+    }
+
+    .aliment-left {
+        text-align: center;
+    }
+
+    .about_overlay {
+        display: none;
+    }
+
+    .ourhistory {
+        margin-right: 0px;
+    }
+
+    .our_history_section {
+        margin-top: -100px;
+        padding-bottom: 0px;
+    }
+
+    .mobile_view_loc_pic {
+        margin-left: 0px !important;
+    }
+
+    .locaton_mobile_section {
+        margin-left: 0px !important;
+    }
+
+
+    .select_locotion {
+        padding-left: 0px !important;
+    }
+
+    .Testimonials_mobile {
+        width: 100% !important;
+    }
+
+    .getnow {
+        width: 100% !important;
+    }
+
+    .Join_Our_Team {
+        margin: 15px;
+    }
+
+    .about_cards {
+        width: 100% !important;
+        display: block;
+    }
+
+    .w100 {
+        width: 100% !important;
+        margin-bottom: 25px;
+    }
+
+    .blog_banner {
+        padding: 40px 20px;
+        margin-top: 80px;
+
+    }
+
+    .Talk {
+        font-size: 30px;
+    }
+
+    .LetGreeNox {
+        margin-bottom: 0px;
+    }
+
+    .OurExpert {
+        margin: 20px;
+    }
+
+    .OurExpert a {
+        margin-bottom: 20px;
+        display: block;
+        text-align: center;
+    }
+
+    .career_h1 {
+        font-size: 30px;
+    }
+
+    .career_sec {
+        padding-top: 120px;
+        padding-bottom: 20px;
+    }
+
+    .career_sec p {
+        padding: 0 10px;
+    }
+
+    .Main_Heading_bg {
+        height: auto;
+    }
+
+    .Main_Heading div:last-child {
+        margin: 0px;
+        padding: 10px;
+    }
+
+    .Main_Heading h1 {
+        font-size: 36px;
+        line-height: 1.2;
+        margin: 0px;
+        padding: 0px;
+        margin-top: 25px;
+    }
+
+    .Our_Presence {
+        padding: 0px;
+    }
+
+    .Our_Presence h2 {
+        font-size: 40px;
+        margin-bottom: 16px;
+    }
+
+    .Our_Presence h3 {
+        font-size: 20px;
+    }
+
+    .gap2 {
+        gap: 20px;
+    }
+
+    .Real {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .serchpanel {
+        display: block;
+        text-align: center;
+    }
+
+    .serchpanel form {
+        width: 100%;
+        display: block;
+        margin-top: 20px;
+    }
+
+    .subcriptionplan_bg {
+        background: none !important;
+        margin-top: 25px;
+    }
+
+    .wfull {
+        width: 100% !important;
+        padding: 0px;
+    }
+
+
+}

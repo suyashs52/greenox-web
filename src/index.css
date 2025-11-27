@@ -1,13 +1,292 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================ custom css ================== */
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.slider_bg-color {
+    background-color: #F7F7F7;
+}
+
+header {
+    box-shadow: 0 2px 8px #0000001a !important;
+}
+
+.bggreen {
+    background-color: #48A470;
+    color: #fff;
+    font-size: 25px;
+    font-weight: 500;
+    border-radius: 0px;
+    border-bottom-right-radius: 50px;
+    width: 60%;
+}
+
+.order_now {
+    background-color: #48A470;
+    border-radius: 3px;
+}
+
+.know_more {
+    border-radius: 3px;
+}
+
+.weekly {
+    background-color: #CCE9D9;
+    border-radius: 50%;
+    padding: 10px;
+    height: 60px;
+    width: 60px;
+    display: flex;
+}
+
+.nthchild:nth-child(2) .weekly {
+    background-color: #FFE0E0;
+}
+
+.freshmealplan {
+    background-color: #F3F6F4;
+}
+
+.MONTHS {
+    width: 100px;
+    text-align: center;
+    font-weight: 900;
+}
+
+.amount {
+    width: 100px !important;
+    display: grid;
+}
+
+.selectLoc {
+    margin-right: -12px;
+    background-color: #fff;
+    padding-right: 10px;
+}
+
+.top_40px {
+    margin-top: 160px;
+    left: 0px;
+}
+
+.subcriptionplan_bg {
+    /* background: url('./img/plan_bg.svg'); */
+    background-repeat: no-repeat;
+    margin-top: 75px;
+}
+
+/* if you used globalmap elsewhere, update it like this */
+.header_or_section_with_globalmap {
+    /* background: url('./img/globalmap.svg'); */
+    background-repeat: no-repeat;
+}
+
+/* Add to your index.css or a global CSS file */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.zoom-parallax {
+    transition: transform 0.8s cubic-bezier(.25, .8, .25, 1);
+    will-change: transform;
+}
+
+.zoom-parallax:hover {
+    transform: scale(1.12);
+    z-index: 20;
+}
+
+.displablock {
+    display: block !important;
+}
+
+.rounded1xl {
+    border-radius: 5px !important;
+    border: 1px solid #ffa500 !important;
+    height: 55px;
+}
+
+.leftmargin {
+    left: -690px;
+    width: 1200px;
+    border: 1px solid #009688;
+    margin-top: 30px;
+    border-top: 0px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background: #fff;
+
+}
+
+.blog_banner {
+    padding-left: 150px;
+    padding-top: 75px;
+}
+
+.blog_list li {
+    margin-bottom: 1rem;
+    line-height: 1.75rem;
+}
+
+.ourhistory {
+    margin-right: 150px;
+}
+
+.top_30px {
+    margin-top: 250px;
+}
+
+.our_history_section {}
+
+.leaf {
+    width: 24%;
+    left: -130px;
+    height: 100%;
+}
+
+.testimonial-item:hover {
+    background: #22c55e !important;
+    /* Tailwind's green-500 */
+    color: #fff !important;
+}
+
+.testimonial-item:hover div {
+    color: #fff !important;
+}
+
+.h100 {
+    height: 250px;
+}
+
+.FullMenu {}
+
+.menubg {
+    height: 250px;
+    z-index: 0 !important;
+}
+
+.delicious {
+    margin-left: 37%;
+}
+
+.menu-bg {
+    background-color: #F3F6F4;
+    padding: 50px 0px;
+}
+
+/* green rounded custom scrollbar (WebKit + Firefox) */
+.custom-scrollbar {
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #10b981 #ecfdf5;
+}
+
+/* WebKit browsers */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #ecfdf5;
+    /* pale green track */
+    border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #a7f3d0, #059669);
+    /* light -> dark green */
+    border-radius: 9999px;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #6ee7b7, #047857);
+}
+
+/* =======  thin-scrollbar  teamservice & privacypolicy page ======= */
+.thin-scroll {
+    scrollbar-width: thin;
+    /* Firefox */
+    scrollbar-color: rgba(100, 116, 139, 0.6) transparent;
+}
+
+.thin-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.thin-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.thin-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 116, 139, 0.35);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.thin-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(100, 116, 139, 0.6);
+}
+
+/* Optional: slightly smoother in-container scrolling for some browsers */
+.thin-scroll {
+    -webkit-overflow-scrolling: touch;
+}
+
+.main_box {
+    margin-top: -250px;
+    position: relative;
+}
+
+.w50 {
+    width: 50px !important;
+}
+
+.hero {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.hero iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.quiklinks {
+    color: #22c55e;
+}
+
+/* if you have globalmap usage, update similarly: */
+.header_or_section_with_globalmap {
+    background: url('./img/globalmap.svg');
 }
