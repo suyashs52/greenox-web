@@ -14,7 +14,6 @@ We believe in sustainability, wellness, and taste—bringing you the best of bot
 
 ## 🚀 Tech Stack
 
-- **Vite** – Super fast frontend tooling
 - **React** – Component-driven UI
 - **Tailwind CSS** – Utility-first styling
 - **Heroicons + Headless UI** – Smooth, accessible UI components

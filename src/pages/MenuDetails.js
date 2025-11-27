@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import menuItems from "../data/menuItems";
 
@@ -26,7 +26,7 @@ function Accordion({ title, children }) {
   );
 }
 
-export default function MenuItemDetail() {
+function MenuDetails(props) {
   const { category: categoryParam, id: idParam } = useParams();
   const { menuArray, itemsByKey } = useMemo(() => {
     const arr = Object.values(menuItems).flatMap((v) =>
@@ -39,20 +39,24 @@ export default function MenuItemDetail() {
     return { menuArray: arr, itemsByKey: map };
   }, []);
 
+  // Hooks must be declared unconditionally before any early returns
+  const [openNutrition, setOpenNutrition] = useState(true);
+  const [openAllergens, setOpenAllergens] = useState(false);
+
   const categoryKey = decodeURIComponent(categoryParam || "");
   const idRaw = decodeURIComponent(idParam || "");
 
   const candidates =
     categoryKey === slugify("All Menu") ||
-    categoryKey === slugify("All Menu Items") ||
-    categoryKey === "all-menu"
+      categoryKey === slugify("All Menu Items") ||
+      categoryKey === "all-menu"
       ? menuArray
       : itemsByKey[categoryKey] ||
-        menuArray.filter((it) =>
-          `${it.name || ""} ${it.description || ""}`
-            .toLowerCase()
-            .includes((categoryKey || "").replace(/-/g, " ")),
-        );
+      menuArray.filter((it) =>
+        `${it.name || ""} ${it.description || ""}`
+          .toLowerCase()
+          .includes((categoryKey || "").replace(/-/g, " ")),
+      );
 
   const item =
     candidates.find((it) => String(it.id) === idRaw) ||
@@ -75,8 +79,6 @@ export default function MenuItemDetail() {
   }
 
   const nutrition = item.nutritionInfo || {};
-  const [openNutrition, setOpenNutrition] = useState(true);
-  const [openAllergens, setOpenAllergens] = useState(false);
   const allergens = item.allergens || [];
 
   const handleImgError = (e) => {
@@ -162,9 +164,8 @@ export default function MenuItemDetail() {
                 </div>
               </div>
               <svg
-                className={`h-5 w-5 transform transition-transform ${
-                  openNutrition ? "rotate-180" : ""
-                }`}
+                className={`h-5 w-5 transform transition-transform ${openNutrition ? "rotate-180" : ""
+                  }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -226,9 +227,8 @@ export default function MenuItemDetail() {
                 </div>
               </div>
               <svg
-                className={`h-5 w-5 transform transition-transform ${
-                  openAllergens ? "rotate-180" : ""
-                }`}
+                className={`h-5 w-5 transform transition-transform ${openAllergens ? "rotate-180" : ""
+                  }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -263,3 +263,5 @@ export default function MenuItemDetail() {
     </section>
   );
 }
+
+export default MenuDetails;
