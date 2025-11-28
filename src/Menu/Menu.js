@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { categories, menuItems } from "../data/menuItems";
-
+import categories_new from "../img/categories.json";
 // helper: slugify and titleize
 const slugify = (s = "") =>
   s
@@ -52,17 +52,26 @@ export default function FoodMenu() {
   const categoryList = useMemo(() => {
     const total = menuArray.length;
     const list = [
-      { key: ALL_KEY, name: "All Menu", slug: slugify(ALL_KEY), count: total },
+     // { key: ALL_KEY, name: "All Menu", slug: slugify(ALL_KEY), count: total },
     ];
 
-    rawCategories.forEach((c) => {
-      const name = typeof c === "string" ? c : String(c?.name ?? "");
-      if (!name || name === ALL_KEY) return;
-      const slug = slugify(name);
-      const count = itemsByKey[slug]?.length ?? 0;
-      // keep both raw name (key) and slug for lookups
-      list.push({ key: name, name, slug, count });
-    });
+    // rawCategories.forEach((c) => {
+    //   const name = typeof c === "string" ? c : String(c?.name ?? "");
+    //   if (!name || name === ALL_KEY) return;
+    //   const slug = slugify(name);
+    //   const count = itemsByKey[slug]?.length ?? 0;
+    //   // keep both raw name (key) and slug for lookups
+    //   list.push({ key: name, name, slug, count });
+    // });
+
+    categories_new.forEach((item, index) =>{
+      console.log(item);
+      debugger;
+       const slug = slugify(item.title);
+       const count = 0;
+       const title = item.title;
+      list.push({ key: index, title, slug, count });
+  });
 
     return list;
   }, [rawCategories, menuArray, itemsByKey]);
