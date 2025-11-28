@@ -217,7 +217,7 @@ const Menu = () => {
           <h1 className="animate__animated animate__zoomIn mb-4 text-2xl font-bold md:text-4xl">
             Trending on the Menu
           </h1>
-          <h2 className="quiklinks animate__animated animate__fadeInRight text-3xl font-bold md:text-5xl">
+          <h2 className="quiklinks animate__animated animate__zoomIn text-3xl font-bold md:text-5xl">
             Most Loved at GreeNox
           </h2>
         </div>

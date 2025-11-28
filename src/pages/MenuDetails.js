@@ -198,14 +198,59 @@ export default function MenuDetails() {
 
   const { categories, menuArray, itemsByKey } = useMemo(() => {
     const cats = normalizeCategories(categoriesData);
-    const arr = cats.flatMap((c) =>
-      (c.items || []).map((it) => ({ ...it, _categoryId: c.id, _categoryName: c.name }))
-    );
+
+    const normalizeItem = (raw, idx, cat) => {
+      const info = raw?.card?.info || raw || {};
+      const id = info.id ?? raw.id ?? `item-${idx}`;
+      const name = info.name ?? raw.name ?? raw.title ?? `Item ${idx + 1}`;
+      const description = info.description ?? raw.description ?? info.subtitle ?? "";
+      const imageRel = info.imageRelPath ?? info.imageId ?? info.image ?? raw.img ?? "";
+      const img = Array.isArray(imageRel) ? String(imageRel[0] ?? "") : String(imageRel ?? "");
+      const imgFile = img ? img.split("/").pop() : "";
+      const price = typeof info.price === "number" ? info.price / 100 : Number(info.price) || 0;
+
+      // structured nutrition or parse from description
+      const rawNutrition = info.nutrition || raw.nutrition || raw.nutritionInfo || {};
+      let nutrition = {
+        calories: rawNutrition.calories ?? rawNutrition.cal ?? rawNutrition.kcal ?? null,
+        protein: rawNutrition.protein ?? rawNutrition.prot ?? null,
+        carbs: rawNutrition.carbs ?? rawNutrition.carbohydrates ?? null,
+        fat: rawNutrition.fat ?? rawNutrition.totalFat ?? null,
+      };
+      const hasAny = Object.values(nutrition).some((v) => v != null && v !== "");
+      if (!hasAny) {
+        const parsed = parseNutritionFromText(description);
+        nutrition = { ...nutrition, ...parsed };
+      }
+
+      // coerce numeric values if present (strip commas and parseFloat)
+      Object.keys(nutrition).forEach((k) => {
+        if (nutrition[k] != null && nutrition[k] !== "") {
+          const n = Number(String(nutrition[k]).replace(/[^\d.]/g, ""));
+          nutrition[k] = Number.isFinite(n) ? n : nutrition[k];
+        }
+      });
+
+      return {
+        ...raw,
+        id,
+        name,
+        description,
+        price,
+        img,
+        imgFile,
+        nutrition,
+        _categoryId: cat.id,
+        _categoryName: cat.name,
+      };
+    };
+
+    const arr = cats.flatMap((c) => (c.items || []).map((it, i) => normalizeItem(it, i, c)));
     const map = {};
     cats.forEach((c) => {
-      map[c.id] = c.items || [];
-      map[slugify(c.name)] = c.items || [];
-      map[c.name] = c.items || [];
+      map[c.id] = (c.items || []).map((it, i) => normalizeItem(it, i, c));
+      map[slugify(c.name)] = map[c.id];
+      map[c.name] = map[c.id];
     });
     return { categories: cats, menuArray: arr, itemsByKey: map };
   }, []);

@@ -288,6 +288,15 @@
                   }
                 }
               },
+                 "nutrition":[
+      {
+        "calories": "250-400",
+        "protein": "10-20 g",
+        "carbs": "20-50 g",
+        "fats": "5-15 g",
+        "fiber": "5-15 g"
+      }
+    ],
               "analytics": {},
               "hideRestaurantDetails": true
             }
