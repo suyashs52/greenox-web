@@ -286,3 +286,7 @@ header {
 .header_or_section_with_globalmap {
     background: url('./img/globalmap.svg');
 }
+
+.tabsmenu {
+    margin-top: 25px;
+}

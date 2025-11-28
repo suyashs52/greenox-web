@@ -24,7 +24,7 @@ const aboutList = [
 const meals = [
   {
     label: "Salads",
-    img: "/img/menu/Extravaganza Veggies Salad.jpg",
+    img: "/img/salad.jpg",
   },
   {
     label: "Meal",

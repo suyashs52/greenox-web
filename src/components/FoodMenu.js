@@ -173,7 +173,7 @@ const FoodMenu = () => {
   return (
     <section className="mx-auto max-w-7xl px-4 py-12" id="target-section">
       {/* Heading */}
-      <div className="tabs_view mb-8 flex w-full flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div className="tabs_view mb-8 flex w-full flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div className="w-full md:w-1/2">
           <p className="text-sm text-gray-500">Popular Menu</p>
           <Delicious />
@@ -183,8 +183,8 @@ const FoodMenu = () => {
         {/* Tabs */}
         <div className="w-full md:w-auto">
           {(() => {
-            const visible = categories.slice(0, 5);
-            const overflow = categories.length > 5 ? categories.slice(5) : [];
+            const visible = categories.slice(0, 4);
+            const overflow = categories.length > 4 ? categories.slice(4) : [];
             return (
               <div className="tabsmenu flex items-center gap-2 py-2">
                 {visible.map((cat) => (
@@ -194,7 +194,7 @@ const FoodMenu = () => {
                       setActiveKey(cat.id);
                       setMoreOpen(false);
                     }}
-                    className={`inline-flex flex-shrink-0 whitespace-nowrap rounded-md px-4 py-3 text-base font-medium transition-colors ${activeKey === cat.id ? "text-orange-500" : "text-gray-600 hover:text-orange-500"}`}
+                    className={`inline-flex flex-shrink-0 whitespace-nowrap rounded-md px-4  text-base font-medium transition-colors ${activeKey === cat.id ? "text-orange-500" : "text-gray-600 hover:text-orange-500"}`}
                   >
                     {cat.name}
                   </button>
