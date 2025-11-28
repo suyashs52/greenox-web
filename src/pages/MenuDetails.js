@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import menuItems from "../data/menuItems";
+import categoriesData from "../img/categories.json";
 
+// same slugify/normalizer logic used by FoodMenu
 const slugify = (s = "") =>
   s
     .toString()
@@ -10,67 +11,165 @@ const slugify = (s = "") =>
     .trim()
     .replace(/\s+/g, "-");
 
-function Accordion({ title, children }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="rounded-lg bg-white shadow-sm">
-      <button
-        onClick={() => setOpen((s) => !s)}
-        className="flex w-full items-center justify-between px-4 py-3 text-left"
-      >
-        <span className="font-semibold">{title}</span>
-        <span className="text-lg">{open ? "−" : "+"}</span>
-      </button>
-      {open && <div className="px-4 pb-4 pt-0">{children}</div>}
-    </div>
-  );
+const normalizeCategory = (raw, idx = 0) => {
+  // simple handling of common shapes
+  if (!raw) return { id: `cat-${idx}`, name: `Category ${idx + 1}`, items: [] };
+
+  // Swiggy-like card
+  if (raw.title && Array.isArray(raw.itemCards)) {
+    const items = raw.itemCards.map((cardObj, i) => {
+      const info = cardObj?.card?.info || {};
+      return {
+        id: info.id ?? `item-${i}`,
+        name: info.name ?? `Item ${i + 1}`,
+        description: info.description ?? "",
+        img: Array.isArray(info.imageRelPath) ? info.imageRelPath[0] : info.imageId || info.image || "",
+        price: typeof info.price === "number" ? info.price / 100 : info?.priceString || 0,
+      };
+    });
+    const name = raw.title || `Category ${idx + 1}`;
+    return { id: raw.id ?? slugify(name), name, items };
+  }
+
+  // already normalized
+  if (raw.name || raw.items) {
+    return {
+      id: raw.id ?? slugify(raw.name ?? `cat-${idx}`),
+      name: raw.name ?? `Category ${idx + 1}`,
+      items: Array.isArray(raw.items) ? raw.items : raw.menu || [],
+    };
+  }
+
+  // object map entry { "Salads": [...] }
+  if (typeof raw === "object" && !Array.isArray(raw)) {
+    const keys = Object.keys(raw);
+    if (keys.length === 1 && Array.isArray(raw[keys[0]])) {
+      const name = keys[0];
+      return { id: slugify(name), name, items: raw[name] };
+    }
+  }
+
+  // fallback
+  return {
+    id: `cat-${idx}`,
+    name: String(raw) || `Category ${idx + 1}`,
+    items: Array.isArray(raw) ? raw : [],
+  };
+};
+
+const normalizeCategories = (data) => {
+  if (!data) return [];
+  if (data.categories && Array.isArray(data.categories)) {
+    return data.categories.map((c, i) => normalizeCategory(c, i));
+  }
+  if (Array.isArray(data)) return data.map((c, i) => normalizeCategory(c, i));
+  if (typeof data === "object") {
+    return Object.entries(data).map(([k, v], i) => ({
+      id: slugify(k),
+      name: k,
+      items: Array.isArray(v) ? v : v?.items || [],
+    }));
+  }
+  return [];
+};
+
+// add image require.context maps and resolver
+let menuLgImages = {};
+let menuSmImages = {};
+try {
+  const reqLg = require.context("../img/menu/lg", false, /\.(png|jpe?g|svg)$/);
+  reqLg.keys().forEach((k) => {
+    menuLgImages[k.replace("./", "")] = reqLg(k);
+  });
+} catch (err) {
+  // ignore if no lg folder or context fails
+}
+try {
+  const reqSm = require.context("../img/menu/sm", false, /\.(png|jpe?g|svg)$/);
+  reqSm.keys().forEach((k) => {
+    menuSmImages[k.replace("./", "")] = reqSm(k);
+  });
+} catch (err) {
+  // ignore if no sm folder or context fails
 }
 
-function MenuDetails(props) {
-  const { category: categoryParam, id: idParam } = useParams();
-  const { menuArray, itemsByKey } = useMemo(() => {
-    const arr = Object.values(menuItems).flatMap((v) =>
-      Array.isArray(v) ? v : [],
-    );
-    const map = {};
-    Object.entries(menuItems).forEach(([k, v]) => {
-      map[slugify(k)] = Array.isArray(v) ? v.slice() : [];
-    });
-    return { menuArray: arr, itemsByKey: map };
-  }, []);
+const resolveItemImg = (imgPath) => {
+  if (!imgPath) return "/img/placeholder.png";
+  if (imgPath.startsWith("http")) return imgPath;
+  // strip leading slashes
+  const base = imgPath.replace(/^\/+/, "");
+  const filename = base.split("/").pop();
 
-  // Hooks must be declared unconditionally before any early returns
+  // prefer large image from src/img/menu/lg/
+  if (filename && menuLgImages[filename]) return menuLgImages[filename];
+  // fallback to small images bundled
+  if (filename && menuSmImages[filename]) return menuSmImages[filename];
+
+  // attempt dynamic require attempts (best-effort)
+  try {
+    return require(`../img/menu/lg/${filename}`);
+  } catch (e) { }
+  try {
+    return require(`../img/menu/sm/${filename}`);
+  } catch (e) { }
+
+  // if the imgPath already points to public path (e.g. img/...), return as public URL
+  if (base.startsWith("img/") || base.startsWith("menu/")) return `/${base}`;
+
+  // final fallback
+  return "/img/placeholder.png";
+};
+
+export default function MenuDetails() {
+  const { category: categoryParam, id: idParam } = useParams();
+
+  // Hooks must be declared unconditionally at top-level of the component
   const [openNutrition, setOpenNutrition] = useState(true);
   const [openAllergens, setOpenAllergens] = useState(false);
 
-  const categoryKey = decodeURIComponent(categoryParam || "");
+  // small helper to handle image load failures
+  const handleImgError = (e) => {
+    if (!e || !e.currentTarget) return;
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = "/img/placeholder.png";
+  };
+
+  const { categories, menuArray, itemsByKey } = useMemo(() => {
+    const cats = normalizeCategories(categoriesData);
+    const arr = cats.flatMap((c) =>
+      (c.items || []).map((it) => ({ ...it, _categoryId: c.id, _categoryName: c.name }))
+    );
+    const map = {};
+    cats.forEach((c) => {
+      map[c.id] = c.items || [];
+      map[slugify(c.name)] = c.items || [];
+      map[c.name] = c.items || [];
+    });
+    return { categories: cats, menuArray: arr, itemsByKey: map };
+  }, []);
+
+  const catKey = decodeURIComponent(categoryParam || "");
   const idRaw = decodeURIComponent(idParam || "");
 
   const candidates =
-    categoryKey === slugify("All Menu") ||
-      categoryKey === slugify("All Menu Items") ||
-      categoryKey === "all-menu"
-      ? menuArray
-      : itemsByKey[categoryKey] ||
-      menuArray.filter((it) =>
-        `${it.name || ""} ${it.description || ""}`
-          .toLowerCase()
-          .includes((categoryKey || "").replace(/-/g, " ")),
-      );
+    itemsByKey[catKey] ||
+    menuArray.filter(
+      (it) =>
+        it._categoryId === catKey ||
+        slugify(it._categoryName) === catKey ||
+        it._categoryName === catKey
+    );
 
   const item =
     candidates.find((it) => String(it.id) === idRaw) ||
-    candidates.find((it) => it.id && Number(it.id) === Number(idRaw)) ||
-    candidates.find((it) => it.name && slugify(it.name) === slugify(idRaw)) ||
-    candidates.find((it) => it.name && it.name === idRaw);
+    candidates.find((it) => slugify(it.name || "") === slugify(idRaw || "")) ||
+    candidates.find((it) => it.name === idRaw);
 
   if (!item) {
     return (
       <main className="mx-auto max-w-4xl p-6">
         <h1 className="mb-4 text-2xl font-semibold">Item not found</h1>
-        <p className="mb-4">
-          Category: {categoryKey || "—"}, ID: {idRaw || "—"}
-        </p>
+        <p className="mb-4">Category: {catKey || "—"}, ID: {idRaw || "—"}</p>
         <Link to="/menu" className="text-green-600 underline">
           Back to menu
         </Link>
@@ -78,16 +177,14 @@ function MenuDetails(props) {
     );
   }
 
-  const nutrition = item.nutritionInfo || {};
+  // when rendering, use resolveItemImg
+  const itemImgSrc = resolveItemImg(item.img);
+  const nutrition = item.nutrition || item.nutritionInfo || {};
   const allergens = item.allergens || [];
-
-  const handleImgError = (e) => {
-    e.currentTarget.onerror = null;
-    e.currentTarget.src = "/img/menu/menubg.svg";
-  };
 
   return (
     <section>
+      {/* Banner */}
       <div className="relative mt-20 h-[300px]">
         <div className="absolute inset-0">
           <img
@@ -99,36 +196,32 @@ function MenuDetails(props) {
         </div>
       </div>
 
+      {/* MAIN BOX */}
       <main className="main_box mx-auto max-w-7xl px-6">
-        <Link
-          to={`/menu/${encodeURIComponent(categoryKey)}`}
-          className="mb-6 inline-block text-green-600"
-        >
+        <Link to={`/menu/${encodeURIComponent(catKey)}`} className="mb-6 inline-block text-green-600">
           ← Back to Menu
         </Link>
 
         <div className="mx-auto max-w-7xl rounded-lg bg-white px-4 py-4">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            {/* Image */}
             <div className="relative overflow-hidden rounded-t-lg md:rounded-l-lg md:rounded-r-none">
-              <img
-                src={item.image || item.img}
-                alt={item.name}
-                className="h-100 w-full rounded-lg object-cover md:h-full"
-                onError={handleImgError}
-              />
+              <img src={itemImgSrc} alt={item.name} className="w-full h-72 object-cover" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/img/placeholder.png"; }} />
             </div>
 
+            {/* Details */}
             <div className="p-8">
               <h1 className="mb-2 text-3xl font-extrabold text-gray-900">
                 {item.name}
               </h1>
               <p className="mb-4 text-sm text-gray-500">{item.subtitle}</p>
 
+              {/* Calories & Price */}
               <div className="mb-6 flex items-center gap-6">
                 <div>
                   <div className="text-xs text-gray-500">Calories</div>
                   <div className="text-lg font-semibold text-gray-800">
-                    {nutrition.calories}
+                    {nutrition.calories ?? "—"}
                   </div>
                 </div>
 
@@ -140,18 +233,35 @@ function MenuDetails(props) {
                 </div>
               </div>
 
-              <p className="mb-6 text-gray-700">{item.description}</p>
+              <p className="mb-6 text-gray-700 leading-relaxed">{item.description}</p>
+
+              {/* Extra chips: category + type */}
+              <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                {item._categoryName && (
+                  <span className="rounded-full bg-gray-100 px-3 py-1">
+                    Category: {item._categoryName}
+                  </span>
+                )}
+
+                {item.type && (
+                  <span className="rounded-full bg-gray-100 px-3 py-1">
+                    {item.type}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </main>
 
+      {/* ----------- NUTRITION SECTION ----------- */}
       <div className="freshmealplan mx-auto mt-16 w-full py-12">
         <div className="mx-auto max-w-7xl px-4">
           <h1 className="mb-8 text-center text-4xl font-extrabold text-green-500">
             Nutritional Information
           </h1>
 
+          {/* Nutrition collapsible box */}
           <div className="mt-6 rounded-lg border border-gray-100 bg-white">
             <button
               className="flex w-full items-center justify-between px-6 py-4 text-left"
@@ -163,6 +273,7 @@ function MenuDetails(props) {
                   Nutrition summary
                 </div>
               </div>
+
               <svg
                 className={`h-5 w-5 transform transition-transform ${openNutrition ? "rotate-180" : ""
                   }`}
@@ -184,30 +295,33 @@ function MenuDetails(props) {
                 <div className="mb-8 grid grid-cols-4 gap-8 text-center">
                   <div>
                     <div className="text-2xl font-bold text-green-500">
-                      {nutrition.calories}
+                      {nutrition.calories ?? "—"}
                     </div>
                     <div className="mt-1 text-sm text-gray-600">Calories</div>
                   </div>
+
                   <div>
                     <div className="text-2xl font-bold text-green-500">
-                      {nutrition.protein}
+                      {nutrition.protein ?? "—"}
                     </div>
                     <div className="mt-1 text-sm text-gray-600">Protein</div>
                   </div>
+
                   <div>
                     <div className="text-2xl font-bold text-green-500">
-                      {nutrition.carbs}
+                      {nutrition.carbs ?? "—"}
                     </div>
                     <div className="mt-1 text-sm text-gray-600">
-                      Total Carbs (17% DV)
+                      Total Carbs
                     </div>
                   </div>
+
                   <div>
                     <div className="text-2xl font-bold text-green-500">
-                      {nutrition.fat}
+                      {nutrition.fat ?? "—"}
                     </div>
                     <div className="mt-1 text-sm text-gray-600">
-                      Total Fat (50% DV)
+                      Total Fat
                     </div>
                   </div>
                 </div>
@@ -215,6 +329,7 @@ function MenuDetails(props) {
             )}
           </div>
 
+          {/* Allergens collapsible */}
           <div className="mt-4 rounded-lg border border-gray-100 bg-white">
             <button
               className="flex w-full items-center justify-between px-6 py-4 text-left"
@@ -226,6 +341,7 @@ function MenuDetails(props) {
                   Allergen Information
                 </div>
               </div>
+
               <svg
                 className={`h-5 w-5 transform transition-transform ${openAllergens ? "rotate-180" : ""
                   }`}
@@ -244,24 +360,26 @@ function MenuDetails(props) {
 
             {openAllergens && (
               <div className="border-t border-gray-100 px-6 py-5">
-                <p className="mb-2 text-sm text-gray-600">Contains:</p>
-                <div className="flex flex-wrap gap-2">
-                  {allergens.map((a) => (
-                    <span
-                      key={a}
-                      className="rounded bg-red-50 px-3 py-1 text-sm font-medium text-red-700"
-                    >
-                      {a}
-                    </span>
-                  ))}
-                </div>
+                {Array.isArray(allergens) && allergens.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {allergens.map((a) => (
+                      <span
+                        key={a}
+                        className="rounded bg-red-50 px-3 py-1 text-sm font-medium text-red-700"
+                      >
+                        {a}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-600">No allergen information available.</p>
+                )}
               </div>
             )}
           </div>
         </div>
       </div>
     </section>
+
   );
 }
-
-export default MenuDetails;

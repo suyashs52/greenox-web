@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import MegaDropdown from "./MegaDropdown";
 
 export default function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false); // mobile
@@ -49,62 +48,56 @@ export default function Navigation() {
             <div className="flex items-center gap-8 pr-8">
               <Link
                 to="/"
-                className={`font-medium ${
-                  isActive("/")
-                    ? "border-b-2 border-green-500 text-green-500"
-                    : "text-gray-700 hover:text-green-500"
-                }`}
+                className={`font-medium ${isActive("/")
+                  ? "border-b-2 border-green-500 text-green-500"
+                  : "text-gray-700 hover:text-green-500"
+                  }`}
               >
                 Home
               </Link>
               <Link
                 to="/menu"
-                className={`${
-                  isActive("/menu") || isMenuActive()
-                    ? "border-b-2 border-green-500 pb-1 text-green-500"
-                    : "text-gray-700 hover:text-green-500"
-                }`}
+                className={`${isActive("/menu") || isMenuActive()
+                  ? "border-b-2 border-green-500 pb-1 text-green-500"
+                  : "text-gray-700 hover:text-green-500"
+                  }`}
               >
                 Menu
               </Link>
 
               <Link
                 to="/subscription"
-                className={`${
-                  isActive("/subscription")
-                    ? "border-b-2 border-green-500 pb-1 text-green-500"
-                    : "text-gray-700 hover:text-green-500"
-                }`}
+                className={`${isActive("/subscription")
+                  ? "border-b-2 border-green-500 pb-1 text-green-500"
+                  : "text-gray-700 hover:text-green-500"
+                  }`}
               >
                 Subscription Plan
               </Link>
               <Link
                 to="/about"
-                className={`${
-                  isActive("/about")
-                    ? "border-b-2 border-green-500 pb-1 text-green-500"
-                    : "text-gray-700 hover:text-green-500"
-                }`}
+                className={`${isActive("/about")
+                  ? "border-b-2 border-green-500 pb-1 text-green-500"
+                  : "text-gray-700 hover:text-green-500"
+                  }`}
               >
                 About Us
               </Link>
               <Link
                 to="/careers"
-                className={`${
-                  isActive("/careers")
-                    ? "border-b-2 border-green-500 pb-1 text-green-500"
-                    : "text-gray-700 hover:text-green-500"
-                }`}
+                className={`${isActive("/careers")
+                  ? "border-b-2 border-green-500 pb-1 text-green-500"
+                  : "text-gray-700 hover:text-green-500"
+                  }`}
               >
                 Careers
               </Link>
               <Link
                 to="/blog"
-                className={`${
-                  isActive("/blog")
-                    ? "border-b-2 border-green-500 pb-1 text-green-500"
-                    : "text-gray-700 hover:text-green-500"
-                }`}
+                className={`${isActive("/blog")
+                  ? "border-b-2 border-green-500 pb-1 text-green-500"
+                  : "text-gray-700 hover:text-green-500"
+                  }`}
               >
                 Blog
               </Link>
@@ -196,11 +189,10 @@ export default function Navigation() {
               </Link>
               <Link
                 to="/careers"
-                className={`${
-                  isActive("/careers")
-                    ? "border-b-2 border-green-500 pb-1 text-green-500"
-                    : "text-gray-700 hover:text-green-500"
-                }`}
+                className={`${isActive("/careers")
+                  ? "border-b-2 border-green-500 pb-1 text-green-500"
+                  : "text-gray-700 hover:text-green-500"
+                  }`}
                 onClick={() => setMenuOpen(false)}
               >
                 Careers

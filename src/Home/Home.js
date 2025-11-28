@@ -1,5 +1,3 @@
-import Slider from "../components/Slider.js";
-import Tabs from "../components/tabs.js";
 import FreshMeals from "../components/Freshmealplans.js";
 import Location from "../components/Location.js";
 import Hero from "../components/Herosection.js";
@@ -12,10 +10,7 @@ const Home = () => {
   return (
     <>
       <Hero />
-      {/* <PopularMenu /> */}
-      <FoodMenu /> {/* Add the FoodMenu component */}
-      {/* <Slider /> */}
-      {/* <Tabs /> */}
+      <FoodMenu />
       <FreshMeals />
       <OurHistory />
       <Location />

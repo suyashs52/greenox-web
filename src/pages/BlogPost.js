@@ -118,7 +118,7 @@ export default function BlogPost() {
             text: post?.excerpt || shareText,
             url: shareUrl,
           })
-          .catch(() => {});
+          .catch(() => { });
       }
     }
   };
@@ -210,9 +210,8 @@ export default function BlogPost() {
                   aria-label={isTableOpen ? "Collapse menu" : "Expand menu"}
                 >
                   <svg
-                    className={`h-6 w-6 transform transition-transform ${
-                      isTableOpen ? "rotate-180" : ""
-                    }`}
+                    className={`h-6 w-6 transform transition-transform ${isTableOpen ? "rotate-180" : ""
+                      }`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
