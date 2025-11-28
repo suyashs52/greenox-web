@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import categoriesData from "../img/categories.json";
 
 // same slugify/normalizer logic used by FoodMenu
@@ -59,17 +59,57 @@ const normalizeCategory = (raw, idx = 0) => {
 
 const normalizeCategories = (data) => {
   if (!data) return [];
-  if (data.categories && Array.isArray(data.categories)) {
-    return data.categories.map((c, i) => normalizeCategory(c, i));
+
+  // top-level array: flatten entries and handle nested `categories` arrays (e.g. "Salads" -> categories: [...])
+  if (Array.isArray(data)) {
+    return data.flatMap((entry, i) => {
+      // if entry contains nested subcategories
+      if (Array.isArray(entry.categories) && entry.categories.length > 0) {
+        const parentSlug = slugify(entry.title || entry.name || `parent-${i}`);
+        return entry.categories.map((sub, j) => {
+          const cat = normalizeCategory(sub, `${i}-${j}`);
+          const subSlug = slugify(sub.title || sub.name || `sub-${j}`);
+          cat.id = cat.id ?? `${parentSlug}--${subSlug}`;
+          cat.parent = entry.title ?? parentSlug;
+          return cat;
+        });
+      }
+
+      // otherwise normalize the entry itself
+      return [normalizeCategory(entry, i)];
+    });
   }
-  if (Array.isArray(data)) return data.map((c, i) => normalizeCategory(c, i));
+
+  // object map: { "Salads": [...] } or { key: { itemCards / items / categories } }
   if (typeof data === "object") {
-    return Object.entries(data).map(([k, v], i) => ({
-      id: slugify(k),
-      name: k,
-      items: Array.isArray(v) ? v : v?.items || [],
-    }));
+    return Object.entries(data).flatMap(([k, v], idx) => {
+      // v is array of items
+      if (Array.isArray(v)) return [{ id: slugify(k), name: k, items: v }];
+
+      // v contains nested categories
+      if (v && Array.isArray(v.categories)) {
+        return v.categories.map((sub, j) => {
+          const cat = normalizeCategory(sub, `${idx}-${j}`);
+          cat.id = cat.id ?? `${slugify(k)}--${slugify(sub.title || sub.name || `sub-${j}`)}`;
+          cat.parent = k;
+          return cat;
+        });
+      }
+
+      // v has itemCards / items / menu
+      if (v && (v.itemCards || v.items || v.menu)) {
+        const base = { title: k, ...v };
+        const cat = normalizeCategory(base, idx);
+        cat.id = cat.id ?? slugify(k);
+        cat.name = k;
+        return [cat];
+      }
+
+      // fallback to single-key normalize
+      return [normalizeCategory({ [k]: v }, idx)];
+    });
   }
+
   return [];
 };
 
@@ -113,15 +153,37 @@ const resolveItemImg = (imgPath) => {
     return require(`../img/menu/sm/${filename}`);
   } catch (e) { }
 
-  // if the imgPath already points to public path (e.g. img/...), return as public URL
+  // if the imgPath already points to public path (e.g. img/..., return as public URL
   if (base.startsWith("img/") || base.startsWith("menu/")) return `/${base}`;
 
   // final fallback
   return "/img/placeholder.png";
 };
 
+// parse nutrition numbers from free-form description text
+const parseNutritionFromText = (text = "") => {
+  if (!text) return {};
+  const norm = (s) => (s == null ? null : Number(String(s).replace(/[^\d.]/g, "").replace(/^\./, "0") || null));
+  const find = (re) => {
+    const m = String(text).match(re);
+    if (!m) return null;
+    return norm(m[1]?.replace(/\s+/g, ""));
+  };
+  // common patterns in your JSON: "energy -516 kcal", "carbs-53. 9g", "protein-20g", "lipid fat-26. 2g"
+  const calories = find(/(?:energy|energy[:\s-]*)([\d.,]+)/i) || find(/([\d.,]+)\s*kcal/i);
+  const carbs = find(/(?:carbs|carbohydrates?)[:\s-]*([\d.,]+)/i) || find(/carbs[-\s]*([\d.,]+)/i);
+  const protein = find(/protein[:\s-]*([\d.,]+)/i) || find(/protien[:\s-]*([\d.,]+)/i);
+  const fat = find(/(?:lipid\s*fat|lipid|fat)[:\s-]*([\d.,]+)/i) || find(/fat[-\s]*([\d.,]+)/i);
+  const fiber = find(/fiber[:\s-]*([\d.,]+)/i) || find(/fibre[:\s-]*([\d.,]+)/i);
+  const any = { calories, protein, carbs, fat, fiber };
+  // remove nulls
+  Object.keys(any).forEach((k) => { if (any[k] == null) delete any[k]; });
+  return any;
+};
+
 export default function MenuDetails() {
   const { category: categoryParam, id: idParam } = useParams();
+  const navigate = useNavigate();
 
   // Hooks must be declared unconditionally at top-level of the component
   const [openNutrition, setOpenNutrition] = useState(true);
@@ -178,8 +240,8 @@ export default function MenuDetails() {
   }
 
   // when rendering, use resolveItemImg
-  const itemImgSrc = resolveItemImg(item.img);
-  const nutrition = item.nutrition || item.nutritionInfo || {};
+  const itemImgSrc = resolveItemImg(item.imgFile || item.img || item.image || "");
+  const nutrition = item.nutrition || {};
   const allergens = item.allergens || [];
 
   return (
@@ -198,15 +260,23 @@ export default function MenuDetails() {
 
       {/* MAIN BOX */}
       <main className="main_box mx-auto max-w-7xl px-6">
-        <Link to={`/menu/${encodeURIComponent(catKey)}`} className="mb-6 inline-block text-green-600">
-          ← Back to Menu
-        </Link>
+        <button
+          type="button"
+          className="mb-6 inline-block text-green-600"
+          onClick={() => {
+            // prefer browser back; fallback to /menu route
+            if (window.history.length > 1) window.history.back();
+            else navigate("/menu");
+          }}
+        >
+          ← Back
+        </button>
 
         <div className="mx-auto max-w-7xl rounded-lg bg-white px-4 py-4">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {/* Image */}
             <div className="relative overflow-hidden rounded-t-lg md:rounded-l-lg md:rounded-r-none">
-              <img src={itemImgSrc} alt={item.name} className="w-full h-72 object-cover" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/img/placeholder.png"; }} />
+              <img src={itemImgSrc} alt={item.name} className="w-full h-100 rounded-lg  object-cover" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/img/placeholder.png"; }} />
             </div>
 
             {/* Details */}
