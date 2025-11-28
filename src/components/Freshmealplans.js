@@ -47,7 +47,7 @@ const features = [
 
 const Freshmealplans = () => {
   return (
-    <div className="freshmealplan bg-white px-2 py-12">
+    <div className=" px-2 py-12">
       <div className="flex w-full flex-col items-center justify-center">
         <div className="mx-auto w-full max-w-2xl text-center">
           {/* <h1 className="animate__animated animate__backInDown mb-2 text-4xl font-bold text-green-600 md:text-5xl">

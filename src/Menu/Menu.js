@@ -168,15 +168,34 @@ const defaultKey = firstWithItems?.id || categories[0]?.id || "default";
 const Menu = () => {
   const [activeKey, setActiveKey] = useState(defaultKey);
   const [query, setQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all"); // "all" | "veg" | "nonveg"
+  const [openFilter, setOpenFilter] = useState(false);
+
   const activeCategory = categories.find((c) => c.id === activeKey) || categories[0] || null;
 
   // filter items by query
   const activeItems = useMemo(() => {
     const arr = (activeCategory?.items || []);
-    if (!query) return arr;
-    const q = query.toLowerCase().trim();
-    return arr.filter((it) => String(it.name || it.description || "").toLowerCase().includes(q));
-  }, [activeCategory, query]);
+    const q = (query || "").toLowerCase().trim();
+    return arr.filter((it) => {
+      // search match
+      const text = String((it.name || "") + " " + (it.description || "")).toLowerCase();
+      if (q && !text.includes(q)) return false;
+      // type filter
+      if (typeFilter === "veg") {
+        // accept items marked "veg" or isVeg truthy
+        const t = (it.type || "").toString().toLowerCase();
+        const isVegFlag = !!it.isVeg || t === "veg";
+        return isVegFlag;
+      }
+      if (typeFilter === "nonveg") {
+        const t = (it.type || "").toString().toLowerCase();
+        const isNonVegFlag = t === "nonveg" || it.isVeg === 0 || it.isVeg === false;
+        return isNonVegFlag;
+      }
+      return true;
+    });
+  }, [activeCategory, query, typeFilter]);
 
   return (
     <section className="menu-bg">
@@ -246,17 +265,52 @@ const Menu = () => {
               <h3 className="text-2xl font-bold text-green-600">{activeCategory?.name || "All Menu"}</h3>
             </div>
 
-            <div className="flex items-center gap-3">
-              <button className="px-4 py-2 bg-white border rounded text-sm">Filter ▾</button>
+            <div className="flex items-center gap-3 relative">
+              {/* Filter dropdown */}
               <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setOpenFilter((s) => !s)}
+                  className="px-4 py-2 bg-white border rounded text-sm inline-flex items-center gap-2"
+                >
+                  {typeFilter === "all" ? "Filter" : typeFilter === "veg" ? "Veg" : "Non‑Veg"} ▾
+                </button>
+                {openFilter && (
+                  <div className="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-30">
+                    <div className="py-1">
+                      <button
+                        onClick={() => { setTypeFilter("all"); setOpenFilter(false); }}
+                        className={`w-full text-left px-4 py-2 text-sm ${typeFilter === "all" ? "bg-gray-100" : "hover:bg-gray-50"}`}
+                      >
+                        All
+                      </button>
+                      <button
+                        onClick={() => { setTypeFilter("veg"); setOpenFilter(false); }}
+                        className={`w-full text-left px-4 py-2 text-sm ${typeFilter === "veg" ? "bg-gray-100" : "hover:bg-gray-50"}`}
+                      >
+                        Veg
+                      </button>
+                      <button
+                        onClick={() => { setTypeFilter("nonveg"); setOpenFilter(false); }}
+                        className={`w-full text-left px-4 py-2 text-sm ${typeFilter === "nonveg" ? "bg-gray-100" : "hover:bg-gray-50"}`}
+                      >
+                        Non‑Veg
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* <div className="relative">
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search Menu..."
                   className="border rounded-md py-2 pl-10 pr-3 w-72 focus:ring-2 focus:ring-green-300"
+                  onKeyDown={(e) => { if (e.key === "Escape") setQuery(""); }}
                 />
                 <span className="absolute left-3 top-2 text-gray-400">🔍</span>
-              </div>
+              </div> */}
             </div>
           </div>
 

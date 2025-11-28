@@ -48,12 +48,17 @@ export const Careers = () => {
             sustainability. Explore our current job openings and discover how
             you can contribute to our mission and grow with our dynamic team.
           </p>
-          <Link
-            to="#openings"
+          <button
             className="animate__animated animate__bounceIn inline-block rounded-md bg-orange-500 from-orange-500 to-yellow-500 px-8 py-4 font-semibold text-white transition-all hover:scale-105 hover:shadow-lg"
           >
-            Join us in shaping the future and elevate your career!
-          </Link>
+            Ready to grow your career and create impact? Email your resume to &nbsp;
+            <a href="mailto:info@greenox.in"
+              className="text-white hover:underline"
+            >
+              info@greenox.in
+            </a>
+
+          </button>
         </div>
       </div>
 
@@ -135,9 +140,9 @@ export const Careers = () => {
                   {job.title}
                 </h3>
                 <p className="mb-4 text-gray-600">{job.description}</p>
-                <button className="rounded-md bg-green-500 px-4 py-2 text-white transition hover:bg-green-600">
+                {/* <button className="rounded-md bg-green-500 px-4 py-2 text-white transition hover:bg-green-600">
                   Apply Now
-                </button>
+                </button> */}
               </div>
             ))}
           </div>
@@ -152,10 +157,10 @@ export const Careers = () => {
             If you're excited about joining Greenox Food Ltd, please submit your
             resume to{" "}
             <a
-              href="mailto:careers@greenox.com"
+              href="mailto:info@greenox.in"
               className="text-green-600 hover:underline"
             >
-              careers@greenox.com
+              info@greenox.in
             </a>{" "}
             with a brief description of your experience and why you'd be a great
             fit.

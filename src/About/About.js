@@ -1,7 +1,7 @@
 import React from "react";
 import "animate.css";
 import { Link } from "react-router-dom";
-import { OurHistory } from "../components/OurHistory";
+import { AboutHistory } from "../components/AboutHistory";
 
 const team = [
   {
@@ -14,20 +14,9 @@ const team = [
     name: "Mr. Ashwani Tiwari",
     role: "Co-Founder",
     img: "/img/ashwani.jpg",
-    desc: "Narendra Savita is the CEO of greeNox, steering the company with strategic vision and calm leadership. Known for his thoughtful decision-making and quick execution, he balances patience with agility. A passionate reader, Narendra brings both analytical depth and personal discipline to his role—having successfully followed the Ketogenic diet and shed 20 kgs himself.",
+    desc: "Mr. Ashwani Tiwari, Co-Founder of greeNox, plays a key role in driving the company’s growth with his strategic thinking and hands-on leadership. Known for his calm approach and strong execution skills, he brings clarity, discipline, and consistent innovation to the team.",
   },
-  {
-    name: "Mr. Ashwani Tiwari",
-    role: "Co-Founder",
-    img: "/img/ashwani.jpg",
-    desc: "Narendra Savita is the CEO of greeNox, steering the company with strategic vision and calm leadership. Known for his thoughtful decision-making and quick execution, he balances patience with agility. A passionate reader, Narendra brings both analytical depth and personal discipline to his role—having successfully followed the Ketogenic diet and shed 20 kgs himself.",
-  },
-  {
-    name: "Mr. Narendra Savita",
-    role: "Co-Founder",
-    img: "/img/narendra.jpeg",
-    desc: "Narendra Savita is the CEO of greeNox, steering the company with strategic vision and calm leadership. Known for his thoughtful decision-making and quick execution, he balances patience with agility. A passionate reader, Narendra brings both analytical depth and personal discipline to his role—having successfully followed the Ketogenic diet and shed 20 kgs himself.",
-  },
+
 ];
 
 export default function About() {
@@ -76,11 +65,10 @@ export default function About() {
             to="/subscription"
             className="inline-block rounded border-2 border-yellow-300 bg-yellow-400 px-4 py-2 font-semibold text-gray-800 shadow transition hover:bg-yellow-300"
           >
-            Get Started
-          </Link>
+            View Subscription Plan          </Link>
         </div>
       </section>
-      <OurHistory />
+      <AboutHistory />
       {/* Journey Section */}
       <section className="Join_Our_Team mx-auto mb-8 flex max-w-7xl flex-col gap-8 rounded-lg bg-white px-6 py-8 shadow md:flex-row">
         <div className="relative flex min-h-[320px] flex-1 items-center justify-center overflow-hidden">
@@ -164,11 +152,11 @@ export default function About() {
           <h4 className="mb-2 text-lg font-semibold">Work At GreeNox</h4>
           <p className="mb-4 text-sm">
             Join our team and discover how to make an impact. Contact us on
-            hr@greenox.com.
+            info@greenox.in
           </p>
-          <button className="w-fit rounded border border-white px-4 py-2 text-white transition hover:bg-white hover:text-gray-800">
+          {/* <button className="w-fit rounded border border-white px-4 py-2 text-white transition hover:bg-white hover:text-gray-800">
             Join Our Team
-          </button>
+          </button> */}
         </div>
       </section>
 
@@ -184,16 +172,16 @@ export default function About() {
             <div>
               <div className="mb-1">
                 📞 Call on{" "}
-                <span className="text-yellow-400">+91 9590 510 520</span>
+                <span className="text-yellow-400">+91 98115 71646</span>
               </div>
               <div>
                 Mail at{" "}
-                <span className="text-yellow-400">inquiries@greenox.com</span>
+                <span className="text-yellow-400">info@greenox.in</span>
               </div>
             </div>
             <div>
               <div>For complaints or feedback, email us at</div>
-              <div className="text-yellow-400">feedback@greenox.com</div>
+              <div className="text-yellow-400">info@greenox.in</div>
             </div>
           </div>
         </div>

@@ -11,7 +11,7 @@ const Home = () => {
     <>
       <Hero />
       <FoodMenu />
-      <FreshMeals />
+      <div className="freshmealplan"> <FreshMeals /></div>
       <OurHistory />
       <Location />
       <Bigestbrand />

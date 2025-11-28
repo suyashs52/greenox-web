@@ -181,10 +181,10 @@ const Location = () => {
         style={
           selectedCity
             ? {
-                backgroundImage: "url('/img/subscription2.svg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }
+              backgroundImage: "url('/img/subscription2.svg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }
             : {}
         }
       >
@@ -223,7 +223,7 @@ const Location = () => {
               style={{ height: "500px", overflowY: "auto" }}
             >
               {cityLocations[selectedCity] &&
-              cityLocations[selectedCity].length > 0 ? (
+                cityLocations[selectedCity].length > 0 ? (
                 cityLocations[selectedCity].map((loc, idx) => (
                   <div
                     key={idx}
@@ -255,9 +255,9 @@ const Location = () => {
                         <span className="font-bold">{loc.phone}</span>
                       </div>
                     </div>
-                    <button className="mt-4 w-full rounded-full bg-orange-400 py-3 text-lg font-bold text-white transition hover:bg-orange-500">
+                    {/* <button className="mt-4 w-full rounded-full bg-orange-400 py-3 text-lg font-bold text-white transition hover:bg-orange-500">
                       GET DIRECTIONS
-                    </button>
+                    </button> */}
                   </div>
                 ))
               ) : (

@@ -92,7 +92,7 @@ export default function Navigation() {
               >
                 Careers
               </Link>
-              <Link
+              {/* <Link
                 to="/blog"
                 className={`${isActive("/blog")
                   ? "border-b-2 border-green-500 pb-1 text-green-500"
@@ -100,7 +100,7 @@ export default function Navigation() {
                   }`}
               >
                 Blog
-              </Link>
+              </Link> */}
 
               {/* 
             <div className="flex items-center gap-4">
@@ -197,13 +197,13 @@ export default function Navigation() {
               >
                 Careers
               </Link>
-              <Link
+              {/* <Link
                 to="/blog"
                 className={`${isActive("/blog") ? "text-green-500" : "text-gray-700 hover:text-green-500"}`}
                 onClick={() => setMenuOpen(false)}
               >
                 Blog
-              </Link>
+              </Link> */}
 
               {/* <hr className="my-2 border-gray-200" />
               <button
