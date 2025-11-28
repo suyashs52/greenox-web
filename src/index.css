@@ -79,17 +79,13 @@ header {
     left: 0px;
 }
 
+
 .subcriptionplan_bg {
-    /* background: url('./img/plan_bg.svg'); */
-    background-repeat: no-repeat;
     margin-top: 75px;
+    background: url('.//img/plan_bg.svg');
+    background-repeat: no-repeat;
 }
 
-/* if you used globalmap elsewhere, update it like this */
-.header_or_section_with_globalmap {
-    /* background: url('./img/globalmap.svg'); */
-    background-repeat: no-repeat;
-}
 
 /* Add to your index.css or a global CSS file */
 @keyframes float {

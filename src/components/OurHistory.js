@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export const OurHistory = () => {
+  const aboutoverlay = "https://greenox-s3.s3.ap-south-1.amazonaws.com/img/about_overlay.png";
   return (
     <section className="our_history_section relative py-16">
       <div className="relative mx-auto max-w-7xl px-4 py-16">
@@ -68,7 +69,7 @@ export const OurHistory = () => {
         className="about_overlay leaf buttom-0 absolute left-0 top-0 z-[-1]"
       />
       <img
-        src="/img/about_overlay.png"
+        src={aboutoverlay}
         alt="about_overlay"
         className="about_overlay top_30px buttom-0 absolute right-0 top-0 z-[-1]"
       />
