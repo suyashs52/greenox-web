@@ -54,7 +54,7 @@ export const OurHistory = () => {
             <div className="relative mx-auto w-full">
               <div className="aspect-square overflow-hidden rounded-full border-8 border-white shadow-xl">
                 <img
-                  src="/img/menu/Icy Strawberry Shake.jpg"
+                  src="/img/shake.jpg"
                   alt="Avocado Toast with Eggs"
                   className="h-full w-full object-cover"
                 />

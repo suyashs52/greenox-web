@@ -245,24 +245,22 @@ export default function MenuDetails() {
   const allergens = item.allergens || [];
 
   return (
+    // ensure section is positioned for absolute background
     <section>
-      {/* Banner */}
+      {/* Hero Section */}
       <div className="relative mt-20 h-[300px]">
-        <div className="absolute inset-0">
-          <img
-            src="/img/menu-banner.jpg"
-            alt="Menu Banner"
-            onError={handleImgError}
-            className="h-full w-full object-cover opacity-50"
-          />
-        </div>
+        <img
+          alt="About Background"
+          className="menubg absolute inset-0 -z-10 w-full h-full object-cover"
+          src="/img/menubg.svg"
+        />
       </div>
 
       {/* MAIN BOX */}
       <main className="main_box mx-auto max-w-7xl px-6">
         <button
           type="button"
-          className="mb-6 inline-block text-green-600"
+          className="mb-6 inline-block text-white"
           onClick={() => {
             // prefer browser back; fallback to /menu route
             if (window.history.length > 1) window.history.back();

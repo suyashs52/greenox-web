@@ -166,6 +166,7 @@ const defaultKey = firstWithItems?.id || categories[0]?.id || "default";
 ----------------------------- */
 const FoodMenu = () => {
   const [activeKey, setActiveKey] = useState(defaultKey);
+  const [moreOpen, setMoreOpen] = useState(false);
   const activeCategory = categories.find((c) => c.id === activeKey);
   const activeItems = activeCategory?.items || [];
 
@@ -181,20 +182,62 @@ const FoodMenu = () => {
 
         {/* Tabs */}
         <div className="w-full md:w-auto">
-          <div className="tabsmenu flex w-full gap-2 overflow-x-auto py-2 no-scrollbar">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveKey(cat.id)}
-                className={`inline-flex flex-shrink-0 whitespace-nowrap rounded-md px-4 py-3 text-base font-medium transition-colors ${activeKey === cat.id
-                  ? "text-orange-500"
-                  : "text-gray-600 hover:text-orange-500"
-                  }`}
-              >
-                {cat.name}
-              </button>
-            ))}
-          </div>
+          {(() => {
+            const visible = categories.slice(0, 5);
+            const overflow = categories.length > 5 ? categories.slice(5) : [];
+            return (
+              <div className="tabsmenu flex items-center gap-2 py-2">
+                {visible.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      setActiveKey(cat.id);
+                      setMoreOpen(false);
+                    }}
+                    className={`inline-flex flex-shrink-0 whitespace-nowrap rounded-md px-4 py-3 text-base font-medium transition-colors ${activeKey === cat.id ? "text-orange-500" : "text-gray-600 hover:text-orange-500"}`}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+
+                {overflow.length > 0 && (
+                  <div className="relative inline-block text-left">
+                    <button
+                      type="button"
+                      aria-haspopup="true"
+                      aria-expanded={moreOpen}
+                      onClick={() => setMoreOpen((s) => !s)}
+                      className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      More
+                      <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 011.08 1.04l-4.25 4.25a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+
+                    {moreOpen && (
+                      <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-20">
+                        <div className="py-1">
+                          {overflow.map((cat) => (
+                            <button
+                              key={cat.id}
+                              onClick={() => {
+                                setActiveKey(cat.id);
+                                setMoreOpen(false);
+                              }}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              {cat.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
       </div>
 
