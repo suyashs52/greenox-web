@@ -51,11 +51,11 @@ export default function HeroSection() {
             Discover our range of nutritious and <br /> delicious products.
           </p>
           <form className="animate__animated animate__zoomIn mb-4 mt-10 flex w-full flex-col items-center justify-center gap-4 px-4 sm:flex-row sm:px-0">
-            <input
+            {/* <input
               placeholder="Enter email or phone"
               className="rounded1xl w-full px-6 py-3 focus:outline-none sm:w-80"
               type="text"
-            />
+            /> */}
             <a href="https://greenox.dotpe.in/store/1/delivery"
               className="rounded1xl flex h-[55px] w-full items-center justify-center bg-orange-400 px-8 font-semibold text-white transition hover:bg-orange-500 sm:w-auto"
             >

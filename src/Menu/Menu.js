@@ -203,6 +203,7 @@ const Menu = () => {
         alt="About Background"
         className="h-200 menubg absolute left-0 top-0 -z-10 w-full object-cover"
         src="img/menubg.svg"
+        loading="lazy"
       />
       {/* Hero Section */}
       <div className="relative h-[230px]">
@@ -211,6 +212,7 @@ const Menu = () => {
             src="/img/menu-banner.jpg"
             alt="Menu Banner"
             className="h-full w-full object-cover opacity-50"
+            loading="lazy"
           />
         </div>
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-white">
@@ -248,6 +250,7 @@ const Menu = () => {
                       src={resolveItemImg(cat.image48Id || cat.image || "")}
                       alt={cat.name}
                       className="h-12 w-12 rounded-md object-cover flex-none"
+                      loading="lazy"
                     />
                     <span className={`text-sm font-medium ${isActive ? "text-green-700" : "text-gray-700"}`}>{cat.name || "Unnamed"}</span>
                   </button>
@@ -276,7 +279,7 @@ const Menu = () => {
                   {typeFilter === "all" ? "Filter" : typeFilter === "veg" ? "Veg" : "Non‑Veg"} ▾
                 </button>
                 {openFilter && (
-                  <div className="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-30">
+                  <div className="absolute left-0 left60 mt-2 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-30">
                     <div className="py-1">
                       <button
                         onClick={() => { setTypeFilter("all"); setOpenFilter(false); }}
@@ -336,6 +339,7 @@ const Menu = () => {
                           alt={item.name}
                           className="h-28 w-28 rounded-md object-cover"
                           onError={(e) => { e.currentTarget.src = "/img/placeholder.png"; }}
+                          loading="lazy"
                         />
                       </div>
 

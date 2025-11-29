@@ -137,7 +137,7 @@ const Location = () => {
         <div className="max-w-xm select_locotion mb-8 w-full pb-4 pl-12">
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-              <img src="/img/location.svg" alt="Location" className="h-5 w-5" />
+              <img src="/img/location.svg" alt="Location" className="h-7 w-5" />
             </span>
             <select
               className="m-0 w-full rounded-full border border-gray-300 py-3 pl-12 pr-8 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400"

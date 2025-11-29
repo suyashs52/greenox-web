@@ -198,16 +198,52 @@ export default function MenuDetails() {
 
   const { categories, menuArray, itemsByKey } = useMemo(() => {
     const cats = normalizeCategories(categoriesData);
-    const arr = cats.flatMap((c) =>
-      (c.items || []).map((it) => ({ ...it, _categoryId: c.id, _categoryName: c.name }))
-    );
+    const catsNorm = cats.map((c) => {
+      const items = (c.items || []).map((it) => {
+        const item = { ...it, _categoryId: c.id, _categoryName: c.name };
+
+        // helper to normalize numeric strings to Number
+        const normVal = (v) => {
+          if (v == null) return null;
+          const s = String(v).replace(/[^\d.]/g, "").replace(/^\./, "0");
+          const n = s === "" ? null : Number(s);
+          return Number.isFinite(n) ? n : null;
+        };
+
+        // derive normalized nutrition from any existing nutrition object (case-insensitive keys)
+        let normalized = {};
+        if (item.nutrition && typeof item.nutrition === "object") {
+          Object.entries(item.nutrition).forEach(([k, v]) => {
+            const key = String(k || "").toLowerCase().replace(/\s+/g, "");
+            if (key.includes("energy")) normalized.calories = normalized.calories ?? normVal(v);
+            else if (key.includes("carb")) normalized.carbs = normalized.carbs ?? normVal(v);
+            else if (key.includes("prot")) normalized.protein = normalized.protein ?? normVal(v);
+            else if (key.includes("lipid") || key.includes("fat")) normalized.fat = normalized.fat ?? normVal(v);
+            else if (key.includes("fiber") || key.includes("fibre")) normalized.fiber = normalized.fiber ?? normVal(v);
+          });
+        }
+
+        // fallback: parse from free-form description / subtitle / nutritionText
+        if (Object.keys(normalized).length === 0) {
+          normalized = parseNutritionFromText(item.description || item.subtitle || item.nutritionText || "") || {};
+        }
+
+        if (Object.keys(normalized).length > 0) item.nutrition = normalized;
+
+        return item;
+      });
+      return { ...c, items };
+    });
+
+    const arr = catsNorm.flatMap((c) => c.items || []);
     const map = {};
-    cats.forEach((c) => {
+    catsNorm.forEach((c) => {
       map[c.id] = c.items || [];
       map[slugify(c.name)] = c.items || [];
       map[c.name] = c.items || [];
     });
-    return { categories: cats, menuArray: arr, itemsByKey: map };
+
+    return { categories: catsNorm, menuArray: arr, itemsByKey: map };
   }, []);
 
   const catKey = decodeURIComponent(categoryParam || "");
@@ -242,6 +278,11 @@ export default function MenuDetails() {
   // when rendering, use resolveItemImg
   const itemImgSrc = resolveItemImg(item.imgFile || item.img || item.image || "");
   const nutrition = item.nutrition || {};
+  const hasNutrition =
+    nutrition && typeof nutrition === "object" &&
+    ["calories", "protein", "carbs", "fat", "fiber"].some(
+      (k) => nutrition[k] != null && !Number.isNaN(Number(nutrition[k]))
+    );
   const allergens = item.allergens || [];
 
   return (
@@ -271,10 +312,10 @@ export default function MenuDetails() {
         </button>
 
         <div className="mx-auto max-w-7xl rounded-lg bg-white px-4 py-4">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div className="grid mb-4 grid-cols-1 gap-8 md:grid-cols-2">
             {/* Image */}
             <div className="relative overflow-hidden rounded-t-lg md:rounded-l-lg md:rounded-r-none">
-              <img src={itemImgSrc} alt={item.name} className="w-full h-100 rounded-lg  object-cover" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/img/placeholder.png"; }} />
+              <img src={itemImgSrc} alt={item.name} className="w-full h-100 rounded-lg  object-cover" loading="lazy" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "/img/placeholder.png"; }} />
             </div>
 
             {/* Details */}
@@ -286,18 +327,16 @@ export default function MenuDetails() {
 
               {/* Calories & Price */}
               <div className="mb-6 flex items-center gap-6">
-                <div>
+                {/* <div>
                   <div className="text-xs text-gray-500">Calories</div>
                   <div className="text-lg font-semibold text-gray-800">
                     {nutrition.calories ?? "—"}
                   </div>
-                </div>
+                </div> */}
 
                 <div>
-                  <div className="text-xs text-gray-500">Price</div>
-                  <div className="text-lg font-bold text-orange-500">
-                    ₹{item.price}
-                  </div>
+                  <div className="text-lg text-gray-500 font-bold">Price <span className="font-bold ml-3 text-orange-500"> ₹{item.price}</span> </div>
+
                 </div>
               </div>
 
@@ -323,82 +362,84 @@ export default function MenuDetails() {
       </main>
 
       {/* ----------- NUTRITION SECTION ----------- */}
-      <div className="freshmealplan mx-auto mt-16 w-full py-12">
-        <div className="mx-auto max-w-7xl px-4">
-          <h1 className="mb-8 text-center text-4xl font-extrabold text-green-500">
-            Nutritional Information
-          </h1>
+      {hasNutrition && (
+        <div className="freshmealplan mx-auto mt-16 w-full py-12">
+          <div className="mx-auto max-w-7xl px-4">
+            <h1 className="mb-8 text-center text-4xl font-extrabold text-green-500">
+              Nutritional Information
+            </h1>
 
-          {/* Nutrition collapsible box */}
-          <div className="mt-6 rounded-lg border border-gray-100 bg-white">
-            <button
-              className="flex w-full items-center justify-between px-6 py-4 text-left"
-              onClick={() => setOpenNutrition((s) => !s)}
-              aria-expanded={openNutrition}
-            >
-              <div>
-                <div className="text-2xl font-semibold text-gray-800">
-                  Nutrition summary
-                </div>
-              </div>
-
-              <svg
-                className={`h-5 w-5 transform transition-transform ${openNutrition ? "rotate-180" : ""
-                  }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+            {/* Nutrition collapsible box */}
+            <div className="mt-6 rounded-lg border border-gray-100 bg-white">
+              <button
+                className="flex w-full items-center justify-between px-6 py-4 text-left"
+                onClick={() => setOpenNutrition((s) => !s)}
+                aria-expanded={openNutrition}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-
-            {openNutrition && (
-              <div className="border-t border-gray-100 px-6 py-5">
-                <div className="mb-8 grid grid-cols-4 gap-8 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-green-500">
-                      {nutrition.calories ?? "—"}
-                    </div>
-                    <div className="mt-1 text-sm text-gray-600">Calories</div>
+                <div>
+                  <div className="text-2xl font-semibold text-gray-800">
+                    Nutrition summary
                   </div>
+                </div>
 
-                  <div>
-                    <div className="text-2xl font-bold text-green-500">
-                      {nutrition.protein ?? "—"}
-                    </div>
-                    <div className="mt-1 text-sm text-gray-600">Protein</div>
-                  </div>
+                <svg
+                  className={`h-5 w-5 transform transition-transform ${openNutrition ? "rotate-180" : ""}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
 
-                  <div>
-                    <div className="text-2xl font-bold text-green-500">
-                      {nutrition.carbs ?? "—"}
+              {openNutrition && (
+                <div className="border-t border-gray-100 px-6 py-5">
+                  <div className="mb-8 grid grid-cols-5 gap-4 text-center">
+                    <div>
+                      <div className="text-2xl font-bold text-green-500">
+                        {nutrition.calories ?? "—"}
+                      </div>
+                      <div className="mt-1 text-sm text-gray-600">Calories</div>
                     </div>
-                    <div className="mt-1 text-sm text-gray-600">
-                      Total Carbs
-                    </div>
-                  </div>
 
-                  <div>
-                    <div className="text-2xl font-bold text-green-500">
-                      {nutrition.fat ?? "—"}
+                    <div>
+                      <div className="text-2xl font-bold text-green-500">
+                        {nutrition.protein ?? "—"}
+                      </div>
+                      <div className="mt-1 text-sm text-gray-600">Protein</div>
                     </div>
-                    <div className="mt-1 text-sm text-gray-600">
-                      Total Fat
+
+                    <div>
+                      <div className="text-2xl font-bold text-green-500">
+                        {nutrition.carbs ?? "—"}
+                      </div>
+                      <div className="mt-1 text-sm text-gray-600">Total Carbs</div>
+                    </div>
+
+                    <div>
+                      <div className="text-2xl font-bold text-green-500">
+                        {nutrition.fat ?? "—"}
+                      </div>
+                      <div className="mt-1 text-sm text-gray-600">Total Fat</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-green-500">
+                        {nutrition.fiber ?? "—"}
+                      </div>
+                      <div className="mt-1 text-sm text-gray-600">Fiber</div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
 
-          {/* Allergens collapsible */}
-          <div className="mt-4 rounded-lg border border-gray-100 bg-white">
+            {/* Allergens collapsible */}
+            {/* <div className="mt-4 rounded-lg border border-gray-100 bg-white">
             <button
               className="flex w-full items-center justify-between px-6 py-4 text-left"
               onClick={() => setOpenAllergens((s) => !s)}
@@ -444,9 +485,10 @@ export default function MenuDetails() {
                 )}
               </div>
             )}
+          </div> */}
           </div>
         </div>
-      </div>
+      )}
     </section>
 
   );

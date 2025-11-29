@@ -1,18 +1,7 @@
 import React, { useEffect, useRef } from "react";
 
 const testimonials = [
-  {
-    text: "Greenox has quickly become my top choice for a wholesome and fulfilling meal. Their dedication to sustainability, freshness, and high-quality ingredients truly stands out. It’s more than just great food—it’s a commitment to a healthier, greener lifestyle.",
-    name: "Akash",
-    role: "Food Technologist",
-    img: "/img/Akash.jpg",
-  },
-  {
-    text: "I’ve been a loyal GreeNox customer for over two years, and their delicious, nutritious dishes keep me coming back. Their plant-based menu has truly been a game-changer for my lifestyle, and every visit feels welcoming thanks to their warm and inviting atmosphere.",
-    name: "Aditya Chaudhary",
-    role: "Production Supervisor",
-    img: "/img/Aditya.jpg",
-  },
+ 
   {
     text: "As a fitness enthusiast, I appreciate the protein-packed options at GreeNox. The Soya Paneer Rice Bowl is my favorite - it's both nutritious and delicious. Plus, the cleanliness and hygiene at their food production unit are top-notch.",
     name: "Adeesh",
