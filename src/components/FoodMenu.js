@@ -42,32 +42,6 @@ const slugify = (s = "") =>
     .replace(/\s+/g, "-");
 
 /* ----------------------------
-   Small helpers (added)
------------------------------ */
-const asStr = (v) => (v == null ? "" : typeof v === "string" ? v : String(v));
-
-const parseNutritionFromText = (text = "") => {
-  if (!text) return {};
-  const norm = (s) => {
-    if (s == null) return null;
-    const n = Number(String(s).replace(/[^\d.]/g, ""));
-    return Number.isFinite(n) ? n : null;
-  };
-  const find = (re) => {
-    const m = String(text).match(re);
-    if (!m) return null;
-    return norm(m[1]?.replace(/\s+/g, ""));
-  };
-  const calories = find(/(?:energy|energy[:\s-]*)([\d.,]+)/i) || find(/([\d.,]+)\s*kcal/i);
-  const carbs = find(/(?:carbs|carbohydrates?)[:\s-]*([\d.,]+)/i) || find(/carbs[-\s]*([\d.,]+)/i);
-  const protein = find(/protein[:\s-]*([\d.,]+)/i);
-  const fat = find(/(?:lipid\s*fat|lipid|fat)[:\s-]*([\d.,]+)/i) || find(/fat[-\s]*([\d.,]+)/i);
-  const out = { calories, protein, carbs, fat };
-  Object.keys(out).forEach((k) => { if (out[k] == null) delete out[k]; });
-  return out;
-};
-
-/* ----------------------------
    Normalize Category
 ----------------------------- */
 const normalizeCategory = (raw, idx = 0) => {
@@ -79,22 +53,30 @@ const normalizeCategory = (raw, idx = 0) => {
       id: raw.id ?? slugify(raw.title || `Category ${idx + 1}`),
       name: raw.title || raw.name || `Category ${idx + 1}`,
       items: raw.itemCards
-        .map((c) => c?.card?.info)
+        .map((c, i) => c?.card?.info)
         .filter(Boolean)
         .map((info, i) => {
           const imageRel = info.imageRelPath || info.imageId || info.image || "";
-          const img = Array.isArray(imageRel) ? String(imageRel[0] ?? "") : String(imageRel ?? "");
-          const imgFile = img ? img.split("/").pop() : "";
+          const img = Array.isArray(imageRel)
+            ? imageRel[0] || ""
+            : String(imageRel || "");
 
           return {
-            id: String(info.id ?? `item-${i}`),
-            name: asStr(info.name),
-            description: asStr(info.description || info.subtitle),
+            id: String(info.id || `item-${i}`),
+            name: info.name || "",
+            description: info.description || info.subtitle || "",
             img,
-            imgFile,
-            price: typeof info.price === "number" ? info.price / 100 : Number(info.priceString?.replace(/[^\d.]/g, "")) || 0,
-            nutrition: info.nutrition && Object.keys(info.nutrition).length ? info.nutrition : parseNutritionFromText(info.description || ""),
-            type: info.itemAttribute?.vegClassifier === "NONVEG" ? "nonveg" : (info.isVeg ? "veg" : undefined),
+            imgFile: img.split("/").pop(),
+            price:
+              typeof info.price === "number"
+                ? info.price / 100
+                : Number(info.priceString?.replace(/[^\d]/g, "")) || 0,
+            type:
+              info.itemAttribute?.vegClassifier === "NONVEG"
+                ? "nonveg"
+                : info.isVeg
+                  ? "veg"
+                  : undefined,
           };
         }),
     };
@@ -108,18 +90,20 @@ const normalizeCategory = (raw, idx = 0) => {
       name: raw.name || raw.title,
       items: itemsArr.map((it, i) => {
         const imageRel = it.imageRelPath || it.imageId || it.image || it.img || "";
-        let imgStr = "";
-        if (Array.isArray(imageRel)) imgStr = String(imageRel[0] ?? "");
-        else imgStr = String(imageRel ?? "");
-        const imgFile = imgStr ? imgStr.split("/").pop() : "";
+        const img = Array.isArray(imageRel)
+          ? imageRel[0] || ""
+          : String(imageRel || "");
+
         return {
-          id: String(it.id ?? `item-${i}`),
-          name: asStr(it.name ?? it.title ?? `Item ${i + 1}`),
-          description: asStr(it.description ?? it.subtitle ?? ""),
-          img: imgStr,
-          imgFile,
-          price: Number(it.price) || Number(it.priceInPaise ? it.priceInPaise / 100 : 0) || 0,
-          nutrition: it.nutrition && Object.keys(it.nutrition).length ? it.nutrition : parseNutritionFromText(it.description || it.subtitle || ""),
+          id: String(it.id || `item-${i}`),
+          name: it.name || it.title || "",
+          description: it.description || it.subtitle || "",
+          img,
+          imgFile: img.split("/").pop(),
+          price:
+            Number(it.price) ||
+            (it.priceInPaise ? it.priceInPaise / 100 : 0) ||
+            0,
           type: it.type || (it.isVeg ? "veg" : undefined),
         };
       }),

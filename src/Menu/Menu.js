@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import categoriesData from "../img/categories.json";
 
-/* ----------------------------
+/* ----------------------------se
    Image loader (Webpack safe)
 ----------------------------- */
 let menuSmImages = {};
