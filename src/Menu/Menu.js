@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import categoriesData from "../img/categories.json";
 
 /* ----------------------------se
@@ -166,7 +166,24 @@ const defaultKey = firstWithItems?.id || categories[0]?.id || "default";
    Component: visual design matching attached image
 ----------------------------- */
 const Menu = () => {
-  const [activeKey, setActiveKey] = useState(defaultKey);
+  const { category: categoryParam } = useParams();
+  const navigate = useNavigate();
+
+  // prefer category from URL when present and valid, otherwise fall back to defaultKey
+  const decodedParam = decodeURIComponent(categoryParam || "");
+  const foundFromParam = categories.find(
+    (c) => c.id === decodedParam || slugify(c.name) === decodedParam || c.name === decodedParam
+  );
+  const [activeKey, setActiveKey] = useState(foundFromParam?.id || defaultKey);
+
+  // respond to param changes (for direct links or navigation)
+  React.useEffect(() => {
+    if (categoryParam) {
+      const key = decodeURIComponent(categoryParam || "");
+      const found = categories.find((c) => c.id === key || slugify(c.name) === key || c.name === key);
+      setActiveKey(found?.id || defaultKey);
+    }
+  }, [categoryParam]);
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all"); // "all" | "veg" | "nonveg"
   const [openFilter, setOpenFilter] = useState(false);
@@ -243,7 +260,15 @@ const Menu = () => {
                 return (
                   <button
                     key={cat.id}
-                    onClick={() => setActiveKey(cat.id)}
+                    onClick={() => {
+                      setActiveKey(cat.id);
+                      // update the URL so the active tab is shareable / persistent
+                      try {
+                        navigate(`/menu/${encodeURIComponent(cat.id)}`);
+                      } catch (e) {
+                        /* ignore navigation errors */
+                      }
+                    }}
                     className={`group flex items-center gap-3 w-full text-left rounded-md px-3 py-2 transition-colors ${isActive ? "bg-green-50 ring-1 ring-green-200" : "hover:bg-gray-50"}`}
                   >
                     <img

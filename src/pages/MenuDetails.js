@@ -303,9 +303,14 @@ export default function MenuDetails() {
           type="button"
           className="mb-6 inline-block text-white"
           onClick={() => {
-            // prefer browser back; fallback to /menu route
-            if (window.history.length > 1) window.history.back();
-            else navigate("/menu");
+            // prefer browser back; fallback to /menu/:category so the Menu page can pick the active tab
+            if (window.history.length > 1) {
+              window.history.back();
+            } else {
+              // try to navigate to the category param if available, otherwise use item's category id/name
+              const cat = encodeURIComponent(catKey || item._categoryId || slugify(item._categoryName || ""));
+              navigate(cat ? `/menu/${cat}` : "/menu");
+            }
           }}
         >
           ← Back

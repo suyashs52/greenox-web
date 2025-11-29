@@ -164,10 +164,10 @@ const Footer = () => {
           </Link>
           , All Rights Reserved
         </div>
-        <div className="flex gap-4">
+        {/* <div className="flex gap-4">
           <img src="/img/appstore.png" alt="App Store" className="h-10" />
           <img src="/img/playstore.png" alt="Google Play" className="h-10" />
-        </div>
+        </div> */}
       </div>
     </footer>
   );
