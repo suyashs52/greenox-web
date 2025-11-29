@@ -170,8 +170,10 @@ const Menu = () => {
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all"); // "all" | "veg" | "nonveg"
   const [openFilter, setOpenFilter] = useState(false);
-
+  const [hasError, setHasError] = useState(false);
   const activeCategory = categories.find((c) => c.id === activeKey) || categories[0] || null;
+
+
 
   // filter items by query
   const activeItems = useMemo(() => {
@@ -197,11 +199,14 @@ const Menu = () => {
     });
   }, [activeCategory, query, typeFilter]);
 
+
+  
   return (
     <section className="menu-bg">
       <img
         alt="About Background"
         className="h-200 menubg absolute left-0 top-0 -z-10 w-full object-cover"
+        onError={() => setHasError(true)} 
         src="img/menubg.svg"
       />
       {/* Hero Section */}
@@ -210,6 +215,7 @@ const Menu = () => {
           <img
             src="/img/menu-banner.jpg"
             alt="Menu Banner"
+            onError={() => setHasError(true)} 
             className="h-full w-full object-cover opacity-50"
           />
         </div>
@@ -229,7 +235,7 @@ const Menu = () => {
         <aside className="custom-scrollbar sticky top-20 hidden w-80 flex-col gap-4 overflow-y-auto rounded-lg bg-white shadow-lg lg:flex">
           <div className="sticky top-20 bg-white  rounded-lg p-4 h-[100vh] overflow-y-auto">
             <div className="flex items-center gap-3 mb-4">
-              <img src="/img/logo.png" alt="logo" className="h-10 w-10 rounded" />
+              <img src="/img/logo.png" onError={() => setHasError(true)}  alt="logo" className="h-10 w-10 rounded" />
               <div>
                 <div className="text-lg font-semibold">All Menu</div>
               </div>
@@ -247,6 +253,7 @@ const Menu = () => {
                     <img
                       src={resolveItemImg(cat.image48Id || cat.image || "")}
                       alt={cat.name}
+                      onError={() => setHasError(true)} 
                       className="h-12 w-12 rounded-md object-cover flex-none"
                     />
                     <span className={`text-sm font-medium ${isActive ? "text-green-700" : "text-gray-700"}`}>{cat.name || "Unnamed"}</span>
@@ -335,7 +342,8 @@ const Menu = () => {
                           src={resolveItemImg(item.img || item.imgFile)}
                           alt={item.name}
                           className="h-28 w-28 rounded-md object-cover"
-                          onError={(e) => { e.currentTarget.src = "/img/placeholder.png"; }}
+                          onError={() => setHasError(true)} 
+                      
                         />
                       </div>
 
@@ -344,7 +352,7 @@ const Menu = () => {
                         <div className="flex items-start justify-between">
                           <h4 className="text-lg font-semibold text-gray-900 line-clamp-1">{item.name}</h4>
                           <span className="ml-2">
-                            {item.type === "nonveg" ? <img src="/img/non-veg.svg" alt="nonveg" className="h-5 w-5" /> : <img src="/img/veg.svg" alt="veg" className="h-5 w-5" />}
+                            {item.type === "nonveg" ? <img  onError={() => setHasError(true)}  src="/img/non-veg.svg" alt="nonveg" className="h-5 w-5" /> : <img onError={() => setHasError(true)}  src="/img/veg.svg" alt="veg" className="h-5 w-5" />}
                           </span>
                         </div>
                         <p className="mt-2 text-sm text-gray-600 line-clamp-2">{item.description}</p>
