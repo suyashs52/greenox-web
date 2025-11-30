@@ -185,18 +185,9 @@ export default function MenuDetails() {
   const { category: categoryParam, id: idParam } = useParams();
   const navigate = useNavigate();
 
-  // Hooks must be declared unconditionally at top-level of the component
   const [openNutrition, setOpenNutrition] = useState(true);
-  const [openAllergens, setOpenAllergens] = useState(false);
 
-  // small helper to handle image load failures
-  const handleImgError = (e) => {
-    if (!e || !e.currentTarget) return;
-    e.currentTarget.onerror = null;
-    e.currentTarget.src = "/img/placeholder.png";
-  };
-
-  const { categories, menuArray, itemsByKey } = useMemo(() => {
+  const { menuArray, itemsByKey } = useMemo(() => {
     const cats = normalizeCategories(categoriesData);
     const catsNorm = cats.map((c) => {
       const items = (c.items || []).map((it) => {
@@ -283,7 +274,7 @@ export default function MenuDetails() {
     ["calories", "protein", "carbs", "fat", "fiber"].some(
       (k) => nutrition[k] != null && !Number.isNaN(Number(nutrition[k]))
     );
-  const allergens = item.allergens || [];
+  // allergens data (unused in current UI)
 
   return (
     // ensure section is positioned for absolute background
@@ -332,13 +323,6 @@ export default function MenuDetails() {
 
               {/* Calories & Price */}
               <div className="mb-6 flex items-center gap-6">
-                {/* <div>
-                  <div className="text-xs text-gray-500">Calories</div>
-                  <div className="text-lg font-semibold text-gray-800">
-                    {nutrition.calories ?? "—"}
-                  </div>
-                </div> */}
-
                 <div>
                   <div className="text-lg text-gray-500 font-bold">Price <span className="font-bold ml-3 text-orange-500"> ₹{item.price}</span> </div>
 
@@ -443,54 +427,7 @@ export default function MenuDetails() {
               )}
             </div>
 
-            {/* Allergens collapsible */}
-            {/* <div className="mt-4 rounded-lg border border-gray-100 bg-white">
-            <button
-              className="flex w-full items-center justify-between px-6 py-4 text-left"
-              onClick={() => setOpenAllergens((s) => !s)}
-              aria-expanded={openAllergens}
-            >
-              <div>
-                <div className="text-2xl font-semibold text-gray-800">
-                  Allergen Information
-                </div>
-              </div>
-
-              <svg
-                className={`h-5 w-5 transform transition-transform ${openAllergens ? "rotate-180" : ""
-                  }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-
-            {openAllergens && (
-              <div className="border-t border-gray-100 px-6 py-5">
-                {Array.isArray(allergens) && allergens.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {allergens.map((a) => (
-                      <span
-                        key={a}
-                        className="rounded bg-red-50 px-3 py-1 text-sm font-medium text-red-700"
-                      >
-                        {a}
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-600">No allergen information available.</p>
-                )}
-              </div>
-            )}
-          </div> */}
+            {/* Allergens section removed (not used) */}
           </div>
         </div>
       )}
